@@ -5,7 +5,7 @@ import random
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template_string
 
-app = Flask(FINORIX PRO BOT)
+app = Flask(__name__)
 
 # ==========================================
 # 1. REAL & OTC MARKETS SEPARATION
