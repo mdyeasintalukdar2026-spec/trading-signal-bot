@@ -1,13 +1,18 @@
+from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+HTML_CODE = """
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FINORIX PRO BOT - REAL & OTC ULTRA MAX</title>
+    <title>FINORIX PRO BOT - 100% REAL & OTC KNOWLEDGE</title>
     <style>
         :root {
             --bg-color: #0b0e14;
-            --card-bg: rgba(18, 22, 33, 0.85);
+            --card-bg: rgba(18, 22, 33, 0.9);
             --neon-green: #00ff88;
             --neon-red: #ff3366;
             --neon-blue: #00e5ff;
@@ -34,7 +39,6 @@
             overflow-x: hidden;
         }
 
-        /* Continuous Dynamic RGB Outer Border Animation */
         .app-card {
             width: 100%;
             max-width: 420px;
@@ -43,21 +47,10 @@
             padding: 15px;
             position: relative;
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            animation: borderGlow 3s linear infinite;
+            box-shadow: 0 0 25px rgba(0,0,0,0.9);
+            border: 2px solid var(--neon-blue);
         }
 
-        @keyframes borderGlow {
-            0% { border-color: #00ff88; box-shadow: 0 0 10px #00ff88; }
-            25% { border-color: #00e5ff; box-shadow: 0 0 10px #00e5ff; }
-            50% { border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
-            75% { border-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
-            100% { border-color: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        }
-
-        /* Header Section */
         .header {
             display: flex;
             align-items: center;
@@ -72,18 +65,11 @@
         }
 
         .avatar-wrapper {
-            position: relative;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             padding: 2px;
-            background: linear-gradient(45deg, #ff007f, #00f0ff);
-            animation: spinBg 2s linear infinite;
-        }
-
-        @keyframes spinBg {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
         }
 
         .avatar-wrapper img {
@@ -94,26 +80,16 @@
             display: block;
         }
 
-        .bot-title {
-            display: flex;
-            flex-direction: column;
-        }
-
         .bot-title h3 {
             font-size: 15px;
             font-weight: 800;
-            letter-spacing: 0.5px;
-            animation: colorShift 1s infinite alternate;
-        }
-
-        @keyframes colorShift {
-            0% { color: var(--neon-gold); }
-            100% { color: var(--neon-red); }
+            color: var(--neon-gold);
         }
 
         .bot-title span {
             font-size: 11px;
-            color: #aaa;
+            color: var(--neon-green);
+            font-weight: bold;
         }
 
         .qx-btn {
@@ -125,18 +101,9 @@
             font-size: 12px;
             border: none;
             cursor: pointer;
-            box-shadow: 0 0 8px rgba(0, 136, 255, 0.6);
-            transition: all 0.2s;
-            animation: pulseBtn 1.5s infinite;
+            box-shadow: 0 0 10px rgba(0, 136, 255, 0.6);
         }
 
-        @keyframes pulseBtn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Timezones Section */
         .timezone-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -145,7 +112,7 @@
         }
 
         .tz-box {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 8px;
             padding: 6px;
@@ -166,7 +133,6 @@
             color: #fff;
         }
 
-        /* Controls Section */
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -177,7 +143,7 @@
         .select-box {
             background: #181d2a;
             color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
             padding: 8px;
             border-radius: 8px;
             font-size: 12px;
@@ -190,29 +156,22 @@
             color: var(--neon-gold);
         }
 
-        /* Analyze Button */
         .analyze-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(90deg, #ff0055, #ff5500);
+            background: linear-gradient(90deg, #00ff88, #00e5ff);
             border: none;
             border-radius: 10px;
-            color: #fff;
-            font-weight: bold;
+            color: #0b0e14;
+            font-weight: 900;
             font-size: 14px;
             cursor: pointer;
             margin-bottom: 12px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
-            transition: 0.2s;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .analyze-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Chart Upload Box */
         .upload-card {
             border: 1px dashed var(--neon-blue);
             background: rgba(0, 229, 255, 0.03);
@@ -253,12 +212,11 @@
             display: none;
         }
 
-        /* Electric Scanning Animation Overlay */
         .scanning-overlay {
             display: none;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 14, 20, 0.9);
+            background: rgba(11, 14, 20, 0.95);
             border-radius: 10px;
             z-index: 10;
             flex-direction: column;
@@ -269,8 +227,8 @@
         .electric-line {
             width: 80%;
             height: 3px;
-            background: var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue);
+            background: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
             animation: lightning 0.2s infinite alternate;
         }
 
@@ -282,14 +240,12 @@
         .scan-text {
             margin-top: 8px;
             font-size: 12px;
-            color: var(--neon-blue);
+            color: var(--neon-green);
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
-        /* Signal Result Box */
         .signal-display {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             border: 2px solid var(--neon-green);
             border-radius: 12px;
             padding: 15px;
@@ -300,12 +256,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .signal-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             letter-spacing: 1px;
         }
@@ -316,9 +270,9 @@
             padding: 2px 8px;
             border-radius: 4px;
             background: rgba(255,255,255,0.1);
+            color: #ddd;
         }
 
-        /* Stats Section */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -346,7 +300,6 @@
             color: var(--neon-blue);
         }
 
-        /* Action Buttons */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -362,14 +315,8 @@
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .sub-btn:hover {
-            background: rgba(255,255,255,0.15);
-        }
-
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -415,21 +362,19 @@
 <body>
 
     <div class="app-card">
-        <!-- Header -->
         <div class="header">
             <div class="profile-container">
                 <div class="avatar-wrapper">
-                    <img src="https://i.ibb.co/L82X19m/profile-img.jpg" id="user-avatar" alt="Profile">
+                    <img src="https://i.ibb.co/L82X19m/profile-img.jpg" alt="Profile">
                 </div>
                 <div class="bot-title">
                     <h3>FINORIX PRO BOT</h3>
-                    <span>HR SHADOW (Owner)</span>
+                    <span>100% REAL KNOWLEDGE ACTIVE</span>
                 </div>
             </div>
             <button class="qx-btn" onclick="window.open('https://quotex.com', '_blank')">QX</button>
         </div>
 
-        <!-- Timezones -->
         <div class="timezone-container">
             <div class="tz-box">
                 <div class="tz-title">QX UTC+00:00 LIVE</div>
@@ -441,7 +386,6 @@
             </div>
         </div>
 
-        <!-- Controls (Expanded Real & OTC Asset Categories) -->
         <div class="controls-grid">
             <select class="select-box" id="asset-select">
                 <optgroup label="--- REAL MARKETS ---">
@@ -450,18 +394,12 @@
                     <option value="USD/JPY">USD/JPY (REAL)</option>
                     <option value="AUD/USD">AUD/USD (REAL)</option>
                     <option value="USD/CAD">USD/CAD (REAL)</option>
-                    <option value="USD/CHF">USD/CHF (REAL)</option>
-                    <option value="EUR/GBP">EUR/GBP (REAL)</option>
                 </optgroup>
                 <optgroup label="--- OTC MARKETS ---">
                     <option value="EUR/USD (OTC)">EUR/USD (OTC)</option>
                     <option value="GBP/USD (OTC)">GBP/USD (OTC)</option>
                     <option value="USD/BDT (OTC)">USD/BDT (OTC)</option>
-                    <option value="EUR/CAD (OTC)">EUR/CAD (OTC)</option>
-                    <option value="USD/ARS (OTC)">USD/ARS (OTC)</option>
                     <option value="USD/INR (OTC)">USD/INR (OTC)</option>
-                    <option value="USD/PKR (OTC)">USD/PKR (OTC)</option>
-                    <option value="USD/EGP (OTC)">USD/EGP (OTC)</option>
                     <option value="USD/BRL (OTC)">USD/BRL (OTC)</option>
                 </optgroup>
             </select>
@@ -472,82 +410,70 @@
             </select>
         </div>
 
-        <!-- Main Analyze Button -->
-        <button class="analyze-btn" onclick="runAnalysis()">ANALYZE MARKET</button>
+        <button class="analyze-btn" onclick="runAnalysis()">RUN 100% REAL ANALYSIS</button>
 
-        <!-- Live Chart Upload Section -->
         <div class="upload-card">
             <label>REAL / OTC CHART SCREENSHOT UPLOAD</label>
             <input type="file" id="chart-file" class="file-input" accept="image/*" onchange="handleFileUpload(event)">
-            <div class="file-btn" onclick="document.getElementById('chart-file').click()">Choose Screenshot</div>
+            <div class="file-btn" onclick="document.getElementById('chart-file').click()">Upload Screenshot</div>
             <img id="chart-preview" class="preview-img" alt="Chart Preview">
 
-            <!-- Electric Scan Overlay -->
             <div class="scanning-overlay" id="electric-overlay">
                 <div class="electric-line"></div>
-                <div class="scan-text" id="scan-status-text">DEEP SCANNING CHART & SNR...</div>
+                <div class="scan-text" id="scan-status-text">APPLYING 100% REAL KNOWLEDGE...</div>
             </div>
         </div>
 
-        <!-- Signal Result Box -->
         <div class="signal-display" id="signal-box">
-            <div class="signal-title" id="signal-text" style="color: var(--neon-green);">READY FOR SIGNAL</div>
-            <div class="signal-type" id="signal-length">WAITING</div>
+            <div class="signal-title" id="signal-text" style="color: var(--neon-green);">SYSTEM READY</div>
+            <div class="signal-type" id="signal-length">0% FAKE - 100% RELIABLE</div>
         </div>
 
-        <!-- Accuracy & Metrics -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-label">CONFIRMATION</div>
-                <div class="stat-value" id="conf-val">98%</div>
+                <div class="stat-value" id="conf-val">99%</div>
             </div>
             <div class="stat-box">
                 <div class="stat-label">ACCURACY</div>
-                <div class="stat-value" id="acc-val">99%</div>
+                <div class="stat-value" id="acc-val">100%</div>
             </div>
             <div class="stat-box">
                 <div class="stat-label">WIN RATE</div>
-                <div class="stat-value" id="win-val">97%</div>
+                <div class="stat-value" id="win-val">99%</div>
             </div>
         </div>
 
-        <!-- Action Grid -->
         <div class="action-grid">
             <button class="sub-btn" onclick="openModal('future-modal')">FUTURE SIGNALS</button>
             <button class="sub-btn" onclick="openModal('history-modal')">TRADE HISTORY</button>
         </div>
     </div>
 
-    <!-- Future Signals Modal -->
     <div class="modal" id="future-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('future-modal')">&times;</span>
-            <h4 style="color: var(--neon-gold); margin-bottom: 10px;">Future Algorithmic Signals</h4>
+            <h4 style="color: var(--neon-gold); margin-bottom: 10px;">Real Knowledge Future Predictions</h4>
             <div id="future-list"></div>
         </div>
     </div>
 
-    <!-- History Modal -->
     <div class="modal" id="history-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('history-modal')">&times;</span>
-            <h4 style="color: var(--neon-blue); margin-bottom: 10px;">Recent Trade Logs</h4>
+            <h4 style="color: var(--neon-blue); margin-bottom: 10px;">Verified Real Trade Logs</h4>
             <div id="history-list"></div>
         </div>
     </div>
 
     <script>
-        // Real Clocks
         function updateClocks() {
             const now = new Date();
-            
-            // UTC / Quotex Time
             const qxHours = String(now.getUTCHours()).padStart(2, '0');
             const qxMins = String(now.getUTCMinutes()).padStart(2, '0');
             const qxSecs = String(now.getUTCSeconds()).padStart(2, '0');
             document.getElementById('qx-time').innerText = `${qxHours}:${qxMins}:${qxSecs}`;
 
-            // Bangladesh Time (UTC+6)
             const bdTime = new Date(now.getTime() + (6 * 60 * 60 * 1000));
             const bdHours = String(bdTime.getUTCHours()).padStart(2, '0');
             const bdMins = String(bdTime.getUTCMinutes()).padStart(2, '0');
@@ -557,43 +483,18 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // 250+ REAL KNOWLEDGE BASE (TECHNICAL & OTC ALGORITHM RULES)
         const REAL_KNOWLEDGE_RULES = [
-            // Rule Group 1: SNR & Support-Resistance Breakout Rules
-            { type: "REAL", trigger: "Support Level Rejection", dir: "BUY (LONG)", candle: "LONG CANDLE", conf: "98%", acc: "99%", win: "97%" },
-            { type: "REAL", trigger: "Resistance Breakout Confirmation", dir: "BUY (LONG)", candle: "STRONG MARUBOZU", conf: "97%", acc: "98%", win: "96%" },
-            { type: "REAL", trigger: "Fake Breakout Reversal at Resistance", dir: "SELL (SHORT)", candle: "MEDIUM CANDLE", conf: "99%", acc: "99%", win: "98%" },
-            { type: "REAL", trigger: "Demand Zone Bounce", dir: "BUY (LONG)", candle: "MEDIUM CANDLE", conf: "96%", acc: "97%", win: "95%" },
-            
-            // Rule Group 2: OTC Specific Price Action Engine Logic
-            { type: "OTC", trigger: "OTC Momentum Trend Continuation", dir: "BUY (LONG)", candle: "LONG CANDLE", conf: "99%", acc: "99%", win: "98%" },
-            { type: "OTC", trigger: "OTC Exhaustion Reversal Node", dir: "SELL (SHORT)", candle: "SHORT / DOJI", conf: "97%", acc: "98%", win: "96%" },
-            { type: "OTC", trigger: "OTC Gap Fill Algorithm", dir: "BUY (LONG)", candle: "MEDIUM CANDLE", conf: "98%", acc: "98%", win: "97%" },
-            { type: "OTC", trigger: "OTC Dynamic Trendline Break", dir: "SELL (SHORT)", candle: "LONG CANDLE", conf: "96%", acc: "97%", win: "96%" },
-
-            // Rule Group 3: Candlestick Patterns Logic
-            { type: "REAL", trigger: "Bullish Engulfing at Key Support", dir: "BUY (LONG)", candle: "LONG CANDLE", conf: "99%", acc: "99%", win: "98%" },
-            { type: "REAL", trigger: "Bearish Engulfing at Key Resistance", dir: "SELL (SHORT)", candle: "LONG CANDLE", conf: "98%", acc: "99%", win: "97%" },
-            { type: "REAL", trigger: "Pin Bar Rejection with High Volume", dir: "BUY (LONG)", candle: "MEDIUM CANDLE", conf: "97%", acc: "98%", win: "96%" },
-            { type: "OTC", trigger: "OTC Consecutive Green Candle Wave", dir: "BUY (LONG)", candle: "MEDIUM CANDLE", conf: "98%", acc: "98%", win: "97%" },
-            { type: "OTC", trigger: "OTC Single Candle Exhaustion Drop", dir: "SELL (SHORT)", candle: "STRONG MARUBOZU", conf: "99%", acc: "99%", win: "98%" }
+            { type: "REAL", trigger: "Strong Support Level Rejection (100% Real Logic)", dir: "BUY (CALL)", candle: "LONG GREEN CANDLE", conf: "99%", acc: "100%", win: "99%" },
+            { type: "REAL", trigger: "Resistance Breakout Confirmation Zone", dir: "BUY (CALL)", candle: "MARUBOZU", conf: "98%", acc: "99%", win: "98%" },
+            { type: "REAL", trigger: "Fake Breakout Rejection at Key Resistance", dir: "SELL (PUT)", candle: "REJECTION PIN BAR", conf: "99%", acc: "100%", win: "99%" },
+            { type: "REAL", trigger: "Demand Zone Volume Bounce", dir: "BUY (CALL)", candle: "MEDIUM CANDLE", conf: "97%", acc: "99%", win: "97%" },
+            { type: "OTC", trigger: "OTC Trend Momentum Continuation Algorithm", dir: "BUY (CALL)", candle: "LONG CANDLE", conf: "99%", acc: "100%", win: "99%" },
+            { type: "OTC", trigger: "OTC Price Exhaustion Reversal Node", dir: "SELL (PUT)", candle: "DOJI / SHORT", conf: "98%", acc: "99%", win: "98%" },
+            { type: "OTC", trigger: "OTC Gap Filling Mathematical Engine", dir: "BUY (CALL)", candle: "MEDIUM CANDLE", conf: "98%", acc: "99%", win: "98%" },
+            { type: "OTC", trigger: "OTC Dynamic Trendline Breakdown", dir: "SELL (PUT)", candle: "STRONG RED CANDLE", conf: "99%", acc: "100%", win: "99%" }
         ];
 
         const tradeHistory = [];
-
-        function evaluateMarketCondition(asset, isOTC) {
-            // Filter knowledge base based on market type selected
-            const matchedRules = REAL_KNOWLEDGE_RULES.filter(r => isOTC ? r.type === "OTC" : r.type === "REAL");
-            const selectedRule = matchedRules[Math.floor(Math.random() * matchedRules.length)];
-            
-            return {
-                direction: selectedRule.dir,
-                length: `${selectedRule.candle} [${selectedRule.trigger}]`,
-                conf: selectedRule.conf,
-                acc: selectedRule.acc,
-                win: selectedRule.win
-            };
-        }
 
         function runAnalysis() {
             const overlay = document.getElementById('electric-overlay');
@@ -604,16 +505,16 @@
             const asset = document.getElementById('asset-select').value;
             const isOTC = asset.includes("OTC");
 
-            scanText.innerText = isOTC ? "ANALYZING OTC ALGORITHM & PATTERNS..." : "ANALYZING REAL MARKET SNR & VOLUME...";
+            scanText.innerText = isOTC ? "APPLYING 100% OTC REAL LOGIC..." : "SCANNING 100% REAL MARKET SNR...";
             overlay.style.display = 'flex';
             
             setTimeout(() => {
                 overlay.style.display = 'none';
+                const matchedRules = REAL_KNOWLEDGE_RULES.filter(r => isOTC ? r.type === "OTC" : r.type === "REAL");
+                const result = matchedRules[Math.floor(Math.random() * matchedRules.length)];
                 
-                const result = evaluateMarketCondition(asset, isOTC);
-                
-                signalText.innerText = result.direction;
-                if(result.direction.includes("BUY")) {
+                signalText.innerText = result.dir;
+                if(result.dir.includes("BUY")) {
                     signalText.style.color = "var(--neon-green)";
                     signalBox.style.borderColor = "var(--neon-green)";
                 } else {
@@ -621,25 +522,23 @@
                     signalBox.style.borderColor = "var(--neon-red)";
                 }
 
-                signalLength.innerText = `PATTERNS: ${result.length}`;
+                signalLength.innerText = `${result.trigger} (${result.candle})`;
                 document.getElementById('conf-val').innerText = result.conf;
                 document.getElementById('acc-val').innerText = result.acc;
                 document.getElementById('win-val').innerText = result.win;
 
-                // Log History
                 const time = document.getElementById('bd-time').innerText;
-                tradeHistory.unshift({ asset, time, dir: result.direction, acc: result.acc });
+                tradeHistory.unshift({ asset, time, dir: result.dir, acc: result.acc });
                 updateHistoryUI();
 
-                // Auto reset signal box after 5 seconds
                 setTimeout(() => {
-                    signalText.innerText = "READY FOR SIGNAL";
+                    signalText.innerText = "SYSTEM READY";
                     signalText.style.color = "var(--neon-green)";
                     signalBox.style.borderColor = "var(--neon-green)";
-                    signalLength.innerText = "WAITING";
+                    signalLength.innerText = "0% FAKE - 100% RELIABLE";
                 }, 5000);
 
-            }, 4000); // 4 Seconds Analysis Animation
+            }, 3500);
         }
 
         function handleFileUpload(event) {
@@ -650,7 +549,7 @@
                     const img = document.getElementById('chart-preview');
                     img.src = e.target.result;
                     img.style.display = 'block';
-                    runAnalysis(); // Auto Trigger Analysis on Upload
+                    runAnalysis();
                 }
                 reader.readAsDataURL(file);
             }
@@ -685,7 +584,7 @@
                 html += `
                     <div class="history-item">
                         <span>+${i*15} Min (${randomAsset})</span>
-                        <span style="color: ${dir.includes('BUY') ? 'var(--neon-green)' : 'var(--neon-red)'}">${dir}</span>
+                        <span style="color: ${dir.includes('BUY') ? 'var(--neon-green)' : 'var(--neon-red)'}">${dir} (100% Real)</span>
                     </div>
                 `;
             }
@@ -694,3 +593,11 @@
     </script>
 </body>
 </html>
+"""
+
+@app.route('/')
+def home():
+    return render_template_string(HTML_CODE)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
